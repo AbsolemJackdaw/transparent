@@ -2,6 +2,7 @@ plugins {
     id 'multiloader-loader'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+    id 'net.darkhax.curseforgegradle' version '1.0.11'
 }
 
 base {
@@ -104,4 +105,21 @@ sourceSets.each {
     def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
     it.output.resourcesDir = dir
     it.java.destinationDirectory = dir
+}
+
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
+tasks.register('publishCurseForge', TaskPublishCurseForge) {
+
+    // In C:/Users/<yourwindowsusername>/.gradle , open the gradle file and create the 'cf_api_token' key.
+    // You can generate your api key at "https://legacy.curseforge.com/account/api-tokens"
+    // use an equal sign to assign the generated token to the key.
+    apiToken = findProperty('cf_api_token')
+    // The main file to upload
+    def mainFile = upload(377582, jar) //transparent's mod id
+    mainFile.releaseType = "${releasetype}"
+    mainFile.changelog = "${changelog}"
+    mainFile.changelogType = 'markdown'
+    mainFile.addGameVersion("${minecraft_version}")
+    mainFile.addGameVersion("forge")
 }

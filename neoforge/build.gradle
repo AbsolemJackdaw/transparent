@@ -1,6 +1,7 @@
 plugins {
     id 'multiloader-loader'
     id 'net.neoforged.gradle.userdev' version '7.0.107'
+    id 'net.darkhax.curseforgegradle' version '1.0.11'
 }
 
 // Automatically enable neoforge AccessTransformers if the file exists
@@ -38,4 +39,21 @@ dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
 
     implementation "com.diontryban.ash_api:ash_api-neoforge:${ash_version}"
+}
+
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
+tasks.register('publishCurseForge', TaskPublishCurseForge) {
+
+    // In C:/Users/<yourwindowsusername>/.gradle , open the gradle file and create the 'cf_api_token' key.
+    // You can generate your api key at "https://legacy.curseforge.com/account/api-tokens"
+    // use an equal sign to assign the generated token to the key.
+    apiToken = findProperty('cf_api_token')
+    // The main file to upload
+    def mainFile = upload(377582, jar) //transparent's mod id
+    mainFile.releaseType = "${releasetype}"
+    mainFile.changelog = "${changelog}"
+    mainFile.changelogType = 'markdown'
+    mainFile.addGameVersion("${minecraft_version}")
+    mainFile.addGameVersion("neoforge")
 }
